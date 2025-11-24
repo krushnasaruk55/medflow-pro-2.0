@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Pharmacy Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px
+    }
+
+    .pill-status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 700
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba
+    }
+
+    .status-preparing {
+      background: #e6f7ff;
+      color: #055160;
+      border: 1px solid #bfefff
+    }
+
+    .status-ready {
+      background: #e6ffef;
+      color: #065f46;
+      border: 1px solid #bff5d0
+    }
+
+    .status-delivered {
+      background: #f0f9ff;
+      color: #1e3a8a;
+      border: 1px solid #dbeafe
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px
+    }
+
+    .presc-text {
+      white-space: pre-wrap;
+      background: #fbfbff;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px dashed #eef2ff
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand">Doctors App — Pharmacy</h1>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="reception.html">Reception</a>
+        <a href="doctor.html">Doctor</a>
+        <a href="pharmacy.html">Pharmacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin: 40px 0 20px;">
+      <h2>Pharmacy Dashboard</h2>
+      <p>Manage prescriptions and medication delivery.</p>
+    </div>
+
+    <div class="panel" style="min-height: 500px;">
+      <div class="topbar" style="display:flex; gap:16px; margin-bottom:24px; align-items:center;">
+        <div style="flex:1; position:relative;">
+          <input id="q" placeholder="Search by name, phone or token..." style="padding-left:40px;" />
+          <svg
+            style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--text-muted);"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+        <button id="refresh" class="secondary">Refresh List</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr; gap:16px;">
+        <div
+          style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px;">
+          <h3 style="margin:0;">Prescription Queue</h3>
+          <div style="display:flex; gap:8px;">
+            <span class="badge"
+              style="background:var(--bg-body); border:1px solid var(--border); color:var(--text-muted);">Pending</span>
+            <span class="badge"
+              style="background:var(--bg-body); border:1px solid var(--border); color:var(--text-muted);">Preparing</span>
+            <span class="badge"
+              style="background:var(--bg-body); border:1px solid var(--border); color:var(--text-muted);">Ready</span>
+          </div>
+        </div>
+        <div id="list"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; 2025 Pharmacy — Demo</div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/pharmacy.js"></script>
+</body>
+
+</html>

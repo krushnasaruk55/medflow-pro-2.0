@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Reception Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand">Doctors App</h1>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="reception.html">Reception</a>
+        <a href="doctor.html">Doctor</a>
+        <a href="pharmacy.html">Pharmacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin: 40px 0 20px; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2>Reception Dashboard</h2>
+        <p>Register new patients and manage the waiting queue.</p>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button id="exportMonth" class="secondary"
+          style="display:flex; align-items:center; gap:6px; padding:8px 12px; font-size:0.85rem;">
+          📥 Export Monthly
+        </button>
+        <button id="exportYear" class="secondary"
+          style="display:flex; align-items:center; gap:6px; padding:8px 12px; font-size:0.85rem;">
+          📥 Export Yearly
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <div class="col panel">
+        <h3 style="margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">New Registration
+        </h3>
+        <form id="regForm">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div>
+              <label for="name">Full Name</label>
+              <input id="name" required type="text" placeholder="e.g. John Doe" />
+            </div>
+            <div>
+              <label for="phone">Phone Number</label>
+              <input id="phone" required type="text" placeholder="10-digit mobile" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:16px;">
+            <div>
+              <label for="age">Age</label>
+              <input id="age" type="number" placeholder="Yrs" />
+            </div>
+            <div>
+              <label for="gender">Gender</label>
+              <select id="gender">
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="patientType">Type</label>
+              <select id="patientType">
+                <option>New</option>
+                <option>Existing</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <label for="address">Address</label>
+            <input id="address" type="text" placeholder="City, Area" />
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+            <div>
+              <label for="opdipd">Category</label>
+              <select id="opdipd">
+                <option>OPD</option>
+                <option>IPD</option>
+              </select>
+            </div>
+            <div>
+              <label for="department">Department</label>
+              <select id="department"></select>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <label for="doctor">Assign Doctor (Optional)</label>
+            <select id="doctor">
+              <option value="">(Auto assign available doctor)</option>
+            </select>
+          </div>
+
+          <div style="margin-top:16px;">
+            <label for="reason">Reason for Visit</label>
+            <input id="reason" placeholder="e.g. Fever, Checkup" />
+          </div>
+
+          <div style="margin-top:16px;">
+            <label for="prescription">Initial Notes / Vitals</label>
+            <textarea id="prescription" rows="3" placeholder="BP, Weight, etc."></textarea>
+          </div>
+
+          <div style="margin-top:16px;">
+            <label for="cost">Cost / Fee (₹)</label>
+            <input id="cost" type="number" min="0" step="0.01" placeholder="e.g. 500" />
+          </div>
+
+          <div style="margin-top:24px; display:flex; align-items:center; justify-content:space-between;">
+            <p id="status" style="margin:0; font-size:0.9rem; color:var(--success); font-weight:600;"></p>
+            <button type="submit" class="btn">Register Patient</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="col">
+        <div class="panel">
+          <div
+            style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+            <h3 style="margin:0;">Recent Patients</h3>
+            <span style="font-size:0.85rem; color:var(--text-muted);">Live Updates</span>
+          </div>
+          <div id="patients"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; 2025 Doctors App — Demo</div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/reception.js"></script>
+</body>
+
+</html>

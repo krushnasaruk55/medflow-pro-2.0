@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Doctor Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand">Doctors App</h1>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="reception.html">Reception</a>
+        <a href="doctor.html">Doctor</a>
+        <a href="pharmacy.html">Pharmacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin: 40px 0 20px; display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <h2>Doctor Dashboard</h2>
+        <p>Manage patient consultations and prescriptions.</p>
+      </div>
+      <div
+        style="display:flex; gap:12px; align-items:center; background:white; padding:8px 12px; border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+        <label style="margin:0; font-weight:600; font-size:0.9rem;">Active Doctor:</label>
+        <select id="doctorSelect"
+          style="border:none; background:transparent; font-weight:600; color:var(--primary); cursor:pointer; padding:0; width:auto; box-shadow:none;"></select>
+        <button id="refresh" class="secondary" style="padding:6px 12px; font-size:0.85rem;">Refresh</button>
+      </div>
+    </div>
+
+    <div class="panel" style="min-height: 500px;">
+      <div
+        style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+        <h3 style="margin:0;">Patient Queue</h3>
+        <span style="font-size:0.85rem; color:var(--text-muted);">Prioritized by status</span>
+      </div>
+      <div id="patients"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; 2025 Doctors App — Demo</div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/doctor.js"></script>
+</body>
+
+</html>

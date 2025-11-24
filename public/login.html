@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MedFlow Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .login-logo span {
+            color: var(--secondary);
+        }
+
+        .hospital-search {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .hospital-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hospital-dropdown.show {
+            display: block;
+        }
+
+        .hospital-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hospital-item:hover {
+            background: #f8fafc;
+        }
+
+        .hospital-item:last-child {
+            border-bottom: none;
+        }
+
+        .section-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .section-btn {
+            padding: 12px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .section-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .section-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 122, 228, 0.1);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <span>MedFlow</span> Pro
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Hospital Management System</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group hospital-search">
+                <label>Select Your Hospital</label>
+                <input type="text" id="hospitalSearch" placeholder="Search hospital name..." autocomplete="off"
+                    required>
+                <div class="hospital-dropdown" id="hospitalDropdown"></div>
+                <input type="hidden" id="selectedHospitalId">
+            </div>
+
+            <div class="section-selector">
+                <button type="button" class="section-btn active" data-section="reception">
+                    📋<br>Reception
+                </button>
+                <button type="button" class="section-btn" data-section="doctor">
+                    🩺<br>Doctor
+                </button>
+                <button type="button" class="section-btn" data-section="pharmacy">
+                    💊<br>Pharmacy
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Monthly Access Code</label>
+                <input type="text" class="password-input" id="password" placeholder="XXXX-XXXX" maxlength="9"
+                    autocomplete="off" required>
+            </div>
+
+            <div id="errorMessage" class="error-message"
+                style="display: none; color: var(--danger); text-align: center; margin: 12px 0;"></div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">
+                Access System
+            </button>
+        </form>
+
+        <div class="register-link">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                New hospital?
+                <a href="/register-hospital.html" style="color: var(--primary); font-weight: 600;">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        let selectedSection = 'reception';
+        let hospitals = [];
+
+        // Load hospitals
+        async function loadHospitals() {
+            try {
+                const response = await fetch('/api/hospitals');
+                hospitals = await response.json();
+            } catch (error) {
+                console.error('Error loading hospitals:', error);
+            }
+        }
+
+        // Search hospitals
+        document.getElementById('hospitalSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const dropdown = document.getElementById('hospitalDropdown');
+
+            if (query.length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            const filtered = hospitals.filter(h =>
+                h.name.toLowerCase().includes(query) ||
+                h.email.toLowerCase().includes(query)
+            );
+
+            if (filtered.length > 0) {
+                dropdown.innerHTML = filtered.map(h => `
+          <div class="hospital-item" onclick="selectHospital(${h.id}, '${h.name}')">
+            <strong>${h.name}</strong><br>
+            <small style="color: var(--text-muted);">${h.email}</small>
+          </div>
+        `).join('');
+                dropdown.classList.add('show');
+            } else {
+                dropdown.innerHTML = '<div class="hospital-item" style="color: var(--text-muted);">No hospitals found</div>';
+                dropdown.classList.add('show');
+            }
+        });
+
+        // Select hospital
+        function selectHospital(id, name) {
+            document.getElementById('selectedHospitalId').value = id;
+            document.getElementById('hospitalSearch').value = name;
+            document.getElementById('hospitalDropdown').classList.remove('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.hospital-search')) {
+                document.getElementById('hospitalDropdown').classList.remove('show');
+            }
+        });
+
+        // Section selector
+        document.querySelectorAll('.section-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.section-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedSection = btn.dataset.section;
+            });
+        });
+
+        // Auto-format password
+        document.getElementById('password').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            if (value.length > 4) {
+                value = value.substring(0, 4) + '-' + value.substring(4, 8);
+            }
+            e.target.value = value;
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const hospitalId = document.getElementById('selectedHospitalId').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (!hospitalId) {
+                errorMsg.textContent = 'Please select a hospital';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        hospitalId: parseInt(hospitalId),
+                        password,
+                        section: selectedSection
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    sessionStorage.setItem('authenticated', 'true');
+                    sessionStorage.setItem('hospitalId', hospitalId);
+                    sessionStorage.setItem('section', selectedSection);
+
+                    window.location.href = `${selectedSection}.html`;
+                } else {
+                    errorMsg.textContent = data.message || 'Invalid access code';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Connection error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // Load hospitals on page load
+        loadHospitals();
+    </script>
+
+</body>
+
+</html>
